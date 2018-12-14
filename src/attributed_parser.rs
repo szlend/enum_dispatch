@@ -1,8 +1,8 @@
 //! Contains helper utilities for parsing items that have been annotated with the `enum_dispatch`
 //! procedural macro attribute.
-use proc_macro;
+use crate::proc_macro;
 use syn;
-use enum_dispatch_item;
+use crate::enum_dispatch_item;
 
 /// Enumerates all successful results of parsing an `enum_dispatch` annotated syntax block.
 #[derive(Clone)]

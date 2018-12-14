@@ -1,7 +1,7 @@
 extern crate enum_dispatch;
 
 mod scope1 {
-    use scope2::{Itemized, Subitem2};
+    use crate::scope2::{Itemized, Subitem2};
     use enum_dispatch::enum_dispatch;
 
     pub struct Subitem1;
@@ -19,7 +19,7 @@ mod scope1 {
 }
 
 mod scope2 {
-    use scope1::{Item, Subitem1};
+    use crate::scope1::{Item, Subitem1};
     use enum_dispatch::enum_dispatch;
     
     pub struct Subitem2;
@@ -35,7 +35,7 @@ mod scope2 {
     }
 }
 
-use scope2::Itemized;
+use crate::scope2::Itemized;
 
 #[test]
 fn main() {

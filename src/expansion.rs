@@ -1,6 +1,6 @@
 //! Provides a utility for generating `enum_dispatch` impl blocks given `EnumDispatchItem` and
 //! `syn::ItemTrait` definitions.
-use proc_macro;
+use crate::proc_macro;
 use proc_macro2;
 use quote::{
     quote,
@@ -9,7 +9,7 @@ use quote::{
 use syn;
 use syn::spanned::Spanned;
 
-use enum_dispatch_item::EnumDispatchItem;
+use crate::enum_dispatch_item::EnumDispatchItem;
 
 /// Name bound to the single enum field in generated match statements. It doesn't really matter
 /// what this is, as long as it's consistent across the left and right sides of generated match

@@ -334,7 +334,7 @@ mod enum_dispatch_item;
 /// Provides utilities for building enum dispatch implementations.
 mod expansion;
 
-use expansion::add_enum_impls;
+use crate::expansion::add_enum_impls;
 
 /// Annotating a trait or enum definition with an `#[enum_dispatch]` attribute will register it
 /// with the enum_dispatch library, allowing it to be used to generate impl blocks elsewhere.

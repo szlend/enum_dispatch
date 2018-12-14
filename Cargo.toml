@@ -3,6 +3,7 @@ name = "enum_dispatch"
 version = "0.1.0"
 authors = ["Anton Lazarev"]
 readme = "README.md"
+edition = "2018"
 
 [lib]
 proc-macro = true

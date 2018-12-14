@@ -2,7 +2,7 @@
 extern crate test;
 
 mod common_structs;
-use common_structs::{EnumDispatched, DynamicDispatched, ReturnsValue, Zero, One};
+use crate::common_structs::{EnumDispatched, DynamicDispatched, ReturnsValue, Zero, One};
 
 #[cfg(test)]
 mod benches {

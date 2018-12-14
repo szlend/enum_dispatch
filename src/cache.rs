@@ -16,7 +16,7 @@ use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use enum_dispatch_item;
+use crate::enum_dispatch_item;
 
 /// Magical storage for trait definitions so that they can be used when parsing other syntax
 /// structures.

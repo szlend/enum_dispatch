@@ -1,0 +1,22 @@
+[package]
+name = "enum_dispatch"
+version = "0.1.0"
+authors = ["Anton Lazarev"]
+readme = "README.md"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+lazy_static = ">= 0.1.0"
+quote = ">= 0.6.8"
+proc-macro2 = ">= 0.1.0"
+
+[dependencies.syn]
+version = ">= 0.15.9"
+features = ["full", "extra-traits"]
+
+[dev-dependencies]
+rand = ">= 0.5.5"
+enum_derive = ">= 0.1.7"
+custom_derive = ">= 0.1.7"

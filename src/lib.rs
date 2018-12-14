@@ -261,7 +261,7 @@
 //! The first set of benchmarks creates trait objects and measures the speed of accessing a method
 //! on them.
 //!
-//! ```
+//! ```text
 //! test benches::boxdyn_compiler_optimized       ... bench:   2,135,418 ns/iter (+/- 12,575)
 //! test benches::customderive_compiler_optimized ... bench:   2,611,860 ns/iter (+/- 18,644)
 //! test benches::enumdispatch_compiler_optimized ... bench:           0 ns/iter (+/- 0)
@@ -280,7 +280,7 @@
 //! The next set of benchmarks uses the `test::black_box` method to hide the fact that the result
 //! of the method is unused.
 //!
-//! ```
+//! ```text
 //! test benches::boxdyn_blackbox       ... bench:   2,131,736 ns/iter (+/- 24,937)
 //! test benches::customderive_blackbox ... bench:   2,611,721 ns/iter (+/- 23,502)
 //! test benches::enumdispatch_blackbox ... bench:     471,740 ns/iter (+/- 1,439)
@@ -298,7 +298,7 @@
 //! and measures the time it takes to successively iterate over the entire `Vec`, calling
 //! `black_box`ed methods on each element.
 //!
-//! ```
+//! ```text
 //! test benches::boxdyn_homogeneous_vec       ... bench:   5,900,191 ns/iter (+/- 95,169)
 //! test benches::customderive_homogeneous_vec ... bench:   4,831,808 ns/iter (+/- 140,437)
 //! test benches::enumdispatch_homogeneous_vec ... bench:     479,630 ns/iter (+/- 3,531)

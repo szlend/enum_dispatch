@@ -1,5 +1,8 @@
 # enum_dispatch
 
+[![Docs](https://docs.rs/enum_dispatch/badge.svg)](https://docs.rs/enum_dispatch/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
+
 `enum_dispatch` transforms your trait objects into concrete compound types, increasing their method call speed up to 10x.
 
 ## example

@@ -1,3 +1,12 @@
+//! The following benchmark tests create a `Vec` of 1024 trait objects whose concrete types are
+//! determined randomly at runtime, iterate over the `Vec` to access them through one of the four
+//! tested methods, and use the result in a `test::black_box` call, repeating one million times.
+//!
+//! This test is most representative of real code -- it doesn't make sense to use dynamic trait
+//! calls on a single object of known type! The dynamic methods take about twice as long to access,
+//! but the performance for `enum_dispatch` is actually about the same as in the `homogeneous-vec`
+//! benchmarks. This provides a really significant speed-up.
+
 #![feature(test)]
 extern crate test;
 
@@ -11,6 +20,7 @@ mod benches {
     extern crate rand;
     use self::rand::Rng;
 
+    const ITERATIONS: usize = 1000000;
     const VEC_SIZE: usize = 1024;
 
     #[bench]
@@ -28,7 +38,7 @@ mod benches {
         }
 
         b.iter(|| {
-            for i in 0..1000000 {
+            for i in 0..ITERATIONS {
                 test::black_box(dispatches[i % VEC_SIZE].return_value());
             }
         })
@@ -49,7 +59,7 @@ mod benches {
         }
 
         b.iter(|| {
-            for i in 0..1000000 {
+            for i in 0..ITERATIONS {
                 test::black_box(dispatches[i % VEC_SIZE].inner().return_value());
             }
         })
@@ -70,7 +80,7 @@ mod benches {
         }
 
         b.iter(|| {
-            for i in 0..1000000 {
+            for i in 0..ITERATIONS {
                 test::black_box(dispatches[i % VEC_SIZE].return_value());
             }
         })
@@ -94,7 +104,7 @@ mod benches {
         }
 
         b.iter(|| {
-            for i in 0..1000000 {
+            for i in 0..ITERATIONS {
                 test::black_box(dispatches[i % VEC_SIZE].return_value());
             }
         })

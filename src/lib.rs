@@ -256,6 +256,8 @@
 //!
 //! ## The benchmarks
 //!
+//! The following benchmark results were measured on a Ryzen 7 2700x CPU.
+//!
 //! ### compiler_optimized
 //!
 //! The first set of benchmarks creates trait objects and measures the speed of accessing a method

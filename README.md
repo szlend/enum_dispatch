@@ -55,6 +55,18 @@ Notice the differences:
 3. Add an `#[enum_dispatch(FirstBlockName)]` attribute to the remaining definition. This will "link" it with the previously registered definition.
 4. Update your dynamic types to use the new enum instead. You can use `.into()` from any trait implementor to automatically turn it into an enum variant.
 
+## performance
+
+More information on performance can be found in the [docs](https://docs.rs/enum_dispatch/), and benchmarks are available in the `benches` directory.
+The following benchmark results give a taste of what can be achieved using `enum_dispatch`.
+They compare the speed of repeatedly accessing method calls on a `Vec` of 1024 trait objects of randomized concrete types using either `Box`ed trait objects, `&` referenced trait objects, or `enum_dispatch`ed enum types.
+
+```text
+test benches::boxdyn_homogeneous_vec       ... bench:   5,900,191 ns/iter (+/- 95,169)
+test benches::refdyn_homogeneous_vec       ... bench:   5,658,461 ns/iter (+/- 137,128)
+test benches::enumdispatch_homogeneous_vec ... bench:     479,630 ns/iter (+/- 3,531)
+```
+
 ## troubleshooting
 
 ### no impls created?

@@ -6,7 +6,7 @@ edition = "2018"
 description = "Near drop-in replacement for dynamic-dispatched method calls with up to 10x the speed"
 repository = "https://gitlab.com/antonok/enum_dispatch"
 readme = "README.md"
-keywords = ["speed", "performance", "traits", "dynamic dispatch", "optimization"]
+keywords = ["speed", "performance", "traits", "dynamic", "optimization"]
 categories = ["rust-patterns", "development-tools::procedural-macro-helpers", "development-tools::cargo-plugins"]
 license = "MIT OR Apache-2.0"
 

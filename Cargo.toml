@@ -2,22 +2,24 @@
 name = "enum_dispatch"
 version = "0.1.0"
 authors = ["Anton Lazarev"]
-readme = "README.md"
 edition = "2018"
+description = "Near drop-in replacement for dynamic-dispatched method calls with up to 10x the speed"
+repository = "https://gitlab.com/antonok/enum_dispatch"
+readme = "README.md"
+keywords = ["speed", "performance", "traits", "dynamic dispatch", "optimization"]
+categories = ["rust-patterns", "development-tools::procedural-macro-helpers", "development-tools::cargo-plugins"]
+license = "MIT OR Apache-2.0"
 
 [lib]
 proc-macro = true
 
 [dependencies]
-lazy_static = ">= 0.1.0"
-quote = ">= 0.6.8"
-proc-macro2 = ">= 0.1.0"
-
-[dependencies.syn]
-version = ">= 0.15.9"
-features = ["full", "extra-traits"]
+lazy_static = ">= 1.1.0, <= 1.2.0"
+quote = ">= 0.6.8, <= 0.6.10"
+proc-macro2 = "^0.4.13"
+syn = { version = ">= 0.15.9, <= 0.15.23", features = ["full", "extra-traits"] }
 
 [dev-dependencies]
-rand = ">= 0.5.5"
-enum_derive = ">= 0.1.7"
-custom_derive = ">= 0.1.7"
+rand = ">= 0.5.5, <= 0.6.1"
+enum_derive = "= 0.1.7"
+custom_derive = "= 0.1.7"

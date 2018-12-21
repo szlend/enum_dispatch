@@ -50,6 +50,7 @@ Notice the differences:
 
 ## how to use
 
+0. Add `enum_dispatch` as a Cargo.toml dependency, and import `enum_dispatch::enum_dispatch` to your code.
 1. Create a new enum whose variants are any in-scope trait implementors you've defined.
 2. Add an `#[enum_dispatch]` attribute to either the enum or trait definition. This will "register" it with the `enum_dispatch` library. Take note of the name of the enum or trait it was applied to -- we'll call it `FirstBlockName`.
 3. Add an `#[enum_dispatch(FirstBlockName)]` attribute to the remaining definition. This will "link" it with the previously registered definition.

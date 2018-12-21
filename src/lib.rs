@@ -319,7 +319,6 @@
     html_favicon_url = "https://gitlab.com/antonok/enum_dispatch/raw/master/enum_dispatch.svg",
 )]
 
-#![feature(proc_macro_span)]
 extern crate proc_macro;
 extern crate proc_macro2;
 extern crate syn;

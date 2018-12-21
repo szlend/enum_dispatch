@@ -68,6 +68,11 @@ test benches::refdyn_homogeneous_vec       ... bench:   5,658,461 ns/iter (+/- 1
 test benches::enumdispatch_homogeneous_vec ... bench:     479,630 ns/iter (+/- 3,531)
 ```
 
+## bonus features
+
+While `enum_dispatch` was built with performance in mind, the transformations it applies make all your data structures much more visible to the compiler.
+That means you can use [`serde`](https://crates.io/crates/serde) or other similar tools on your trait objects!
+
 ## troubleshooting
 
 ### no impls created?

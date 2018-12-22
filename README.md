@@ -73,6 +73,25 @@ test benches::enumdispatch_homogeneous_vec ... bench:     479,630 ns/iter (+/- 3
 While `enum_dispatch` was built with performance in mind, the transformations it applies make all your data structures much more visible to the compiler.
 That means you can use [`serde`](https://crates.io/crates/serde) or other similar tools on your trait objects!
 
+## custom variant names
+
+By default, `enum_dispatch` will expand each enum variants into one with a single unnamed field of the same name as the internal type.
+If for some reason you'd like to use a custom name for a particular type in an `enum_dispatch` variant, you can do so as shown below:
+
+```rust
+#[enum_dispatch]
+enum MyTypes {
+    TypeA,
+    CustomVariantName(TypeB),
+}
+
+let mt: MyTypes = TypeB::new().into();
+match mt {
+    TypeA(a) => { /* `a` is a TypeA */ },
+    CustomVariantName(b) => { /* `b` is a TypeB */ },
+}
+```
+
 ## troubleshooting
 
 ### no impls created?

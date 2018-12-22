@@ -354,6 +354,10 @@ use crate::expansion::add_enum_impls;
 /// an impl of std::convert::From for each variant. When annotating a trait, BlockName should be the
 /// name of a registered enum. When annotating an enum, BlockName should be the name of a registered
 /// trait.
+///
+/// An annotated enum should have variants that are simply the names of types imported to the
+/// current scope. To force individual variants to use a custom name when expanded, each variant
+/// can also take the form of a normal tuple-style enum variant with a single field.
 #[proc_macro_attribute]
 pub fn enum_dispatch(attr: TokenStream, item: TokenStream) -> TokenStream {
     let new_block = attributed_parser::parse_attributed(item.clone()).unwrap();

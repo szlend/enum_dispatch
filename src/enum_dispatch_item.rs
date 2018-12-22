@@ -10,6 +10,9 @@ use syn;
 use quote::TokenStreamExt;
 use proc_macro2;
 
+use crate::enum_dispatch_variant::EnumDispatchVariant;
+use crate::filter_attrs::FilterAttrs;
+
 /// A structure that can be used to store syntax information about an `enum_dispatch` enum.
 ///
 /// Mostly identical to `syn::ItemEnum`.
@@ -21,7 +24,7 @@ pub struct EnumDispatchItem {
     pub ident: syn::Ident,
     pub generics: syn::Generics,
     brace_token: syn::token::Brace,
-    pub variants: syn::punctuated::Punctuated<syn::Type, syn::token::Comma>,
+    pub variants: syn::punctuated::Punctuated<EnumDispatchVariant, syn::token::Comma>,
 }
 
 /// Allows `EnumDispatchItem`s to be parsed from `String`s or `TokenStream`s.
@@ -35,7 +38,7 @@ impl syn::parse::Parse for EnumDispatchItem {
         let where_clause = input.parse()?;
         let content;
         let brace_token = syn::braced!(content in input);
-        let variants = content.parse_terminated(syn::Type::parse)?;
+        let variants = content.parse_terminated(EnumDispatchVariant::parse)?;
         Ok(Self {
             attrs,
             vis,
@@ -71,10 +74,10 @@ impl syn::export::quote::ToTokens for EnumDispatchItem {
 impl ::std::convert::From<EnumDispatchItem> for syn::ItemEnum {
     fn from(item: EnumDispatchItem) -> syn::ItemEnum {
         use ::std::iter::FromIterator;
-        let variants: Vec<syn::Variant> = item.variants.iter().map(|variant_type: &syn::Type| {
+        let variants: Vec<syn::Variant> = item.variants.iter().map(|variant: &EnumDispatchVariant| {
             syn::Variant {
                 attrs: vec![],
-                ident: ident_for(variant_type),
+                ident: variant.ident.to_owned(),
                 fields: syn::Fields::Unnamed(syn::FieldsUnnamed {
                     paren_token: Default::default(),
                     unnamed: {
@@ -84,7 +87,7 @@ impl ::std::convert::From<EnumDispatchItem> for syn::ItemEnum {
                             vis: syn::Visibility::Inherited,
                             ident: None,
                             colon_token: Default::default(),
-                            ty: variant_type.to_owned(),
+                            ty: variant.ty.to_owned(),
                         });
                         punctuated
                     },
@@ -104,54 +107,5 @@ impl ::std::convert::From<EnumDispatchItem> for syn::ItemEnum {
             brace_token: item.brace_token,
             variants: syn::punctuated::Punctuated::from_iter(variants),
         }
-    }
-}
-
-/// When expanding shorthand `enum_dispatch` enum syntax, each specified type must acquire an
-/// associated identifier to use for the name of the standard Rust enum variant.
-///
-/// In the case of types that are simply hierarchical module paths, the last element of the path is
-/// extracted.
-///
-/// There are no guarantees about the uniqueness of path names.
-///
-/// Note that `proc_macro_attribute`s cannot provide custom syntax parsing. Unless using a
-/// function-style procedural macro, each type must already be parseable as a unit enum variant.
-/// This rules out, for example, generic types with lifetime or type parameters.
-fn ident_for(ty: &syn::Type) -> syn::Ident {
-    match ty {
-        syn::Type::Path(path) => {
-            let path = path.path.to_owned();
-            let last = path.segments.last().unwrap().into_value();
-            last.ident.to_owned()
-        },
-        _ => {
-            unimplemented!("A variant for the specified type cannot be created.");
-        }
-    }
-}
-
-/// Private trait copied from syn::attr.rs for convenience when implementing ToTokens
-trait FilterAttrs<'a> {
-    type Ret: Iterator<Item = &'a syn::Attribute>;
-
-    fn outer(self) -> Self::Ret;
-}
-
-/// Private trait impl copied from syn::attr.rs for convenience when implementing ToTokens
-impl<'a, T> FilterAttrs<'a> for T
-where
-    T: IntoIterator<Item = &'a syn::Attribute>,
-{
-    type Ret = ::std::iter::Filter<T::IntoIter, fn(&&syn::Attribute) -> bool>;
-
-    fn outer(self) -> Self::Ret {
-        fn is_outer(attr: &&syn::Attribute) -> bool {
-            match attr.style {
-                syn::AttrStyle::Outer => true,
-                _ => false,
-            }
-        }
-        self.into_iter().filter(is_outer)
     }
 }

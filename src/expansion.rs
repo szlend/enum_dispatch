@@ -10,6 +10,7 @@ use syn;
 use syn::spanned::Spanned;
 
 use crate::enum_dispatch_item::EnumDispatchItem;
+use crate::enum_dispatch_variant::EnumDispatchVariant;
 
 /// Name bound to the single enum field in generated match statements. It doesn't really matter
 /// what this is, as long as it's consistent across the left and right sides of generated match
@@ -27,7 +28,7 @@ pub fn add_enum_impls(enum_def: EnumDispatchItem, traitdef: syn::ItemTrait) -> p
     trait_impl.unsafety = traitdef.unsafety;
     trait_impl.generics = traitdef.generics;
 
-    let variants: Vec<&syn::Type> = enum_def.variants.iter().collect();
+    let variants: Vec<&EnumDispatchVariant> = enum_def.variants.iter().collect();
 
     for trait_fn in traitfns {
         trait_impl
@@ -46,14 +47,16 @@ pub fn add_enum_impls(enum_def: EnumDispatchItem, traitdef: syn::ItemTrait) -> p
 }
 
 /// Generates impls of std::convert::From for each enum variant.
-fn generate_from_impls(enumname: &syn::Ident, enumvariants: &[&syn::Type]) -> Vec<syn::ItemImpl> {
+fn generate_from_impls(enumname: &syn::Ident, enumvariants: &[&EnumDispatchVariant]) -> Vec<syn::ItemImpl> {
     enumvariants
         .iter()
         .map(|variant| {
+            let variant_name = &variant.ident;
+            let variant_type = &variant.ty;
             let impl_block = quote! {
-                impl ::std::convert::From<#variant> for #enumname {
-                    fn from(v: #variant) -> #enumname {
-                        #enumname::#variant(v)
+                impl ::std::convert::From<#variant_type> for #enumname {
+                    fn from(v: #variant_type) -> #enumname {
+                        #enumname::#variant_name(v)
                     }
                 }
             };
@@ -142,27 +145,29 @@ fn create_trait_fn_call(trait_method: &syn::TraitItemMethod) -> syn::ExprCall {
 fn create_match_expr(
     trait_method: &syn::TraitItemMethod,
     enum_name: &syn::Ident,
-    enumvariants: &[&syn::Type],
+    enumvariants: &[&EnumDispatchVariant],
 ) -> syn::Expr {
     let trait_fn_call = create_trait_fn_call(trait_method);
 
     // Creates a Vec containing a match arm for every enum variant
     let match_arms = enumvariants
         .iter()
-        .map(|variant| syn::Arm {
+        .map(|variant| {
+            let variant_name = &variant.ident;
+            syn::Arm {
             attrs: vec![],
             leading_vert: None,
             pats: {
                 let mut segments = syn::punctuated::Punctuated::new();
                 let fieldname = syn::Ident::new(FIELDNAME, variant.span());
-                segments.push(syn::parse_quote! {#enum_name::#variant(#fieldname)});
+                segments.push(syn::parse_quote! {#enum_name::#variant_name(#fieldname)});
                 segments
             },
             guard: None,
             fat_arrow_token: Default::default(),
             body: Box::new(syn::Expr::from(trait_fn_call.to_owned())),
             comma: Some(Default::default()),
-        }).collect();
+        }}).collect();
 
     // Creates the match expression
     syn::Expr::from(syn::ExprMatch {
@@ -192,7 +197,7 @@ fn create_match_expr(
 fn create_trait_match(
     trait_item: syn::TraitItem,
     enum_name: &syn::Ident,
-    enumvariants: &[&syn::Type],
+    enumvariants: &[&EnumDispatchVariant],
 ) -> syn::ImplItem {
     match trait_item {
         syn::TraitItem::Method(trait_method) => {

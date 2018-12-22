@@ -337,8 +337,12 @@ mod attributed_parser;
 mod cache;
 /// Provides a custom syntax specification for enum dispatch syntax blocks.
 mod enum_dispatch_item;
+/// Provides a custom syntax specification for the variants of enum dispatch syntax blocks.
+mod enum_dispatch_variant;
 /// Provides utilities for building enum dispatch implementations.
 mod expansion;
+/// Convenience trait for token parsing.
+mod filter_attrs;
 
 use crate::expansion::add_enum_impls;
 

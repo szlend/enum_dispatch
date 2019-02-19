@@ -1,6 +1,6 @@
 use enum_dispatch::enum_dispatch;
 
-use serde_derive::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize};
 
 #[enum_dispatch]
 trait Shaped {

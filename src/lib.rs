@@ -138,7 +138,6 @@
 //! to generate the same implementation when using `enum_dispatch`.
 //!
 //! ```
-//! # extern crate enum_dispatch;
 //! # use enum_dispatch::enum_dispatch;
 //! #
 //! #[enum_dispatch]
@@ -188,7 +187,6 @@
 //! for the names of each enum variant.
 //!
 //! ```
-//! # extern crate enum_dispatch;
 //! # use enum_dispatch::enum_dispatch;
 //! #
 //! # #[enum_dispatch]
@@ -320,10 +318,6 @@
 )]
 
 extern crate proc_macro;
-extern crate proc_macro2;
-extern crate syn;
-extern crate quote;
-extern crate lazy_static;
 
 use proc_macro::{
     TokenStream,

@@ -1,4 +1,3 @@
-extern crate enum_dispatch;
 use enum_dispatch::enum_dispatch;
 
 #[enum_dispatch(Traited)]

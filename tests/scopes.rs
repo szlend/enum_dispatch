@@ -1,5 +1,3 @@
-extern crate enum_dispatch;
-
 mod scope1 {
     use crate::scope2::{Itemized, Subitem2};
     use enum_dispatch::enum_dispatch;

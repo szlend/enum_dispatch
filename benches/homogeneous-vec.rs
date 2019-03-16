@@ -17,8 +17,7 @@ use crate::common_structs::{EnumDispatched, DynamicDispatched, ReturnsValue, Zer
 mod benches {
     use super::*;
     use test::Bencher;
-    extern crate rand;
-    use self::rand::Rng;
+    use rand::Rng;
 
     const ITERATIONS: usize = 1000000;
     const VEC_SIZE: usize = 1024;

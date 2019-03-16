@@ -1,11 +1,6 @@
-extern crate enum_derive;
-use self::enum_derive::{EnumInnerAsTrait, EnumFromInner, enum_derive_util};
-
-extern crate custom_derive;
-use self::custom_derive::custom_derive;
-
-extern crate enum_dispatch;
-use self::enum_dispatch::enum_dispatch;
+use enum_derive::{EnumInnerAsTrait, EnumFromInner, enum_derive_util};
+use custom_derive::custom_derive;
+use enum_dispatch::enum_dispatch;
 
 mod zero;
 pub use self::zero::Zero;

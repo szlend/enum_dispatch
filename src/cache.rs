@@ -18,18 +18,18 @@ use std::sync::Mutex;
 
 use crate::enum_dispatch_item;
 
-/// Magical storage for trait definitions so that they can be used when parsing other syntax
-/// structures.
+// Magical storage for trait definitions so that they can be used when parsing other syntax
+// structures.
 lazy_static! {
-    static ref traitDefs: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
-    static ref enumDefs: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
-    static ref deferredLinks: Mutex<HashMap<String, Vec<String>>> = Mutex::new(HashMap::new());
+    static ref TRAIT_DEFS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
+    static ref ENUM_DEFS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
+    static ref DEFERRED_LINKS: Mutex<HashMap<String, Vec<String>>> = Mutex::new(HashMap::new());
 }
 
 /// Store a trait definition for future reference.
 pub fn cache_trait(item: syn::ItemTrait) {
     let identname = item.ident.to_string();
-    traitDefs
+    TRAIT_DEFS
         .lock()
         .unwrap()
         .insert(identname, item.into_token_stream().to_string());
@@ -38,7 +38,7 @@ pub fn cache_trait(item: syn::ItemTrait) {
 /// Store an enum definition for future reference.
 pub fn cache_enum_dispatch(item: enum_dispatch_item::EnumDispatchItem) {
     let identname = item.ident.to_string();
-    enumDefs
+    ENUM_DEFS
         .lock()
         .unwrap()
         .insert(identname, item.into_token_stream().to_string());
@@ -48,7 +48,7 @@ pub fn cache_enum_dispatch(item: enum_dispatch_item::EnumDispatchItem) {
 pub fn defer_link(needed: &Ident, cached: &::proc_macro2::Ident) {
     // cached is a proc_macro2::Ident until there is a good way to convert into proc_macro::Ident.
     let (needed, cached) = (needed.to_string(), cached.to_string());
-    let mut deferred_links = deferredLinks.lock().unwrap();
+    let mut deferred_links = DEFERRED_LINKS.lock().unwrap();
     if deferred_links.contains_key(&needed) {
         deferred_links.get_mut(&needed).unwrap().push(cached.to_owned());
     } else {
@@ -64,12 +64,12 @@ pub fn defer_link(needed: &Ident, cached: &::proc_macro2::Ident) {
 /// Returns a list of all of the trait definitions that were previously linked to the supplied enum
 /// name.
 pub fn fulfilled_by_enum(defname: &::proc_macro2::Ident) -> Vec<syn::ItemTrait> {
-    let idents = match deferredLinks.lock().unwrap().remove_entry(&defname.to_string()) {
+    let idents = match DEFERRED_LINKS.lock().unwrap().remove_entry(&defname.to_string()) {
         Some((_, links)) => links,
         None => vec![],
     };
     idents.iter().filter_map(|ident_string| {
-        match traitDefs.lock().unwrap().get(ident_string) {
+        match TRAIT_DEFS.lock().unwrap().get(ident_string) {
             Some(entry) => Some(syn::parse(entry.parse().unwrap()).unwrap()),
             None => None,
         }
@@ -79,12 +79,12 @@ pub fn fulfilled_by_enum(defname: &::proc_macro2::Ident) -> Vec<syn::ItemTrait> 
 /// Returns a list of all of the enum definitions that were previously linked to the supplied trait
 /// name.
 pub fn fulfilled_by_trait(defname: &::proc_macro2::Ident) -> Vec<enum_dispatch_item::EnumDispatchItem> {
-    let idents = match deferredLinks.lock().unwrap().remove_entry(&defname.to_string()) {
+    let idents = match DEFERRED_LINKS.lock().unwrap().remove_entry(&defname.to_string()) {
         Some((_, links)) => links,
         None => vec![],
     };
     idents.iter().filter_map(|ident_string| {
-        match enumDefs.lock().unwrap().get(ident_string) {
+        match ENUM_DEFS.lock().unwrap().get(ident_string) {
             Some(entry) => Some(syn::parse(entry.parse().unwrap()).unwrap()),
             None => None,
         }

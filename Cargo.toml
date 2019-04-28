@@ -1,7 +1,7 @@
 [package]
 name = "enum_dispatch"
 version = "0.1.2"
-authors = ["Anton Lazarev"]
+authors = ["Anton Lazarev <https://antonok.com>"]
 edition = "2018"
 description = "Near drop-in replacement for dynamic-dispatched method calls with up to 10x the speed"
 repository = "https://gitlab.com/antonok/enum_dispatch"

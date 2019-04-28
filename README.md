@@ -92,6 +92,9 @@ match mt {
 }
 ```
 
+Custom variant names are required for enums and traits with generic type arguments, which can also be optimized by `enum_dispatch`.
+Check out [this generics example](tests/generics.rs) to see how that works.
+
 ## troubleshooting
 
 ### no impls created?

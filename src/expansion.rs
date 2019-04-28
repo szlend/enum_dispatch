@@ -23,10 +23,16 @@ pub fn add_enum_impls(enum_def: EnumDispatchItem, traitdef: syn::ItemTrait) -> p
     let traitname = traitdef.ident;
     let traitfns = traitdef.items;
 
-    let trait_impl = format!("impl {} for {} {{ }}", traitname, enum_def.ident);
-    let mut trait_impl: syn::ItemImpl = syn::parse_str(trait_impl.as_str()).unwrap();
+    let (impl_generics, ty_generics, where_clause) = traitdef.generics.split_for_impl();
+    let enumname = &enum_def.ident.to_owned();
+    let trait_impl = quote! {
+        impl #impl_generics #traitname #ty_generics for #enumname #ty_generics #where_clause {
+
+        }
+    };
+    let mut trait_impl: syn::ItemImpl = syn::parse(trait_impl.into()).unwrap();
+
     trait_impl.unsafety = traitdef.unsafety;
-    trait_impl.generics = traitdef.generics;
 
     let variants: Vec<&EnumDispatchVariant> = enum_def.variants.iter().collect();
 
@@ -36,7 +42,7 @@ pub fn add_enum_impls(enum_def: EnumDispatchItem, traitdef: syn::ItemTrait) -> p
             .push(create_trait_match(trait_fn, &enum_def.ident, &variants));
     }
 
-    let from_impls = generate_from_impls(&enum_def.ident, &variants);
+    let from_impls = generate_from_impls(&enum_def.ident, &variants, &trait_impl.generics);
 
     let mut impls = proc_macro2::TokenStream::new();
     for from_impl in from_impls.iter() {
@@ -47,15 +53,16 @@ pub fn add_enum_impls(enum_def: EnumDispatchItem, traitdef: syn::ItemTrait) -> p
 }
 
 /// Generates impls of std::convert::From for each enum variant.
-fn generate_from_impls(enumname: &syn::Ident, enumvariants: &[&EnumDispatchVariant]) -> Vec<syn::ItemImpl> {
+fn generate_from_impls(enumname: &syn::Ident, enumvariants: &[&EnumDispatchVariant], generics: &syn::Generics) -> Vec<syn::ItemImpl> {
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     enumvariants
         .iter()
         .map(|variant| {
             let variant_name = &variant.ident;
             let variant_type = &variant.ty;
             let impl_block = quote! {
-                impl ::std::convert::From<#variant_type> for #enumname {
-                    fn from(v: #variant_type) -> #enumname {
+                impl #impl_generics ::std::convert::From<#variant_type> for #enumname #ty_generics #where_clause {
+                    fn from(v: #variant_type) -> #enumname #ty_generics {
                         #enumname::#variant_name(v)
                     }
                 }

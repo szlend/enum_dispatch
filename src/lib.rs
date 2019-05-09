@@ -392,12 +392,14 @@ pub fn enum_dispatch(attr: TokenStream, item: TokenStream) -> TokenStream {
         attributed_parser::ParsedItem::Trait(traitdef) => {
             let additional_enums = cache::fulfilled_by_trait(&traitdef.ident);
             for enumdef in additional_enums {
+                cache::remove_entry(&enumdef.ident);
                 expanded.append_all(add_enum_impls(enumdef, traitdef.clone()));
             }
         },
         attributed_parser::ParsedItem::EnumDispatch(enumdef) => {
             let additional_traits = cache::fulfilled_by_enum(&enumdef.ident);
             for traitdef in additional_traits {
+                cache::remove_entry(&traitdef.ident);
                 expanded.append_all(add_enum_impls(enumdef.clone(), traitdef));
             }
         },
